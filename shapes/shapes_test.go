@@ -17,13 +17,13 @@ func assertEquals(got float64, want float64, t *testing.T) {
 }
 
 func TestArea(t *testing.T) {
-	type AreaTest struct {
+	type AreaTestCase struct {
 		name         string
 		shape        Shape
 		expectedArea float64
 	}
 
-	areaTests := []AreaTest{
+	areaTests := []AreaTestCase{
 		{name: "Rectangle", shape: Rectangle{12.0, 6.0}, expectedArea: 72.0},
 		{name: "Circle", shape: Circle{10}, expectedArea: 314.1592653589793},
 		{name: "Triangle", shape: Triangle{12, 6}, expectedArea: 36},
