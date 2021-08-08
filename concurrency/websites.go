@@ -21,4 +21,5 @@ func CheckWebsites(wc WebsiteChecker, urls []string) map[string]bool {
 		results[r.string] = r.bool
 	}
 	return results
+	//done
 }
