@@ -3,11 +3,12 @@ package roman
 import (
 	"fmt"
 	"testing"
+	"testing/quick"
 )
 
 var (
 	cases = []struct {
-		Arabic int
+		Arabic uint16
 		Roman  string
 	}{
 		{Arabic: 1, Roman: "I"},
@@ -66,5 +67,51 @@ func TestRomanNumerals(t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestDoubleConversion(t *testing.T) {
+	assertion := func(arabic uint16) bool {
+		if arabic > 3999 {
+			return true
+		}
+		t.Log("Testing ", arabic)
+		converted := ConvertToArabic(ConvertToRoman(arabic))
+		return converted == arabic
+	}
+
+	if err := quick.Check(assertion, &quick.Config{MaxCount: 1000}); err != nil {
+		t.Errorf("Double conversion failed")
+	}
+}
+
+type RomanDigit string
+
+const (
+	One         RomanDigit = "I"
+	Five                   = "V"
+	Ten                    = "X"
+	Fifty                  = "L"
+	Hundred                = "C"
+	FiveHundred            = "D"
+	Thousand               = "M"
+)
+
+func TestNoMoreThanThreeConsecutiveDigits(t *testing.T) {
+
+	assertion := func(candidate byte) bool {
+		repeated := make([]byte, 4)
+		for i := 0; i < 4; i++ {
+			repeated[i] = candidate
+		}
+
+		fmt.Println(string(candidate))
+		_, err4 := allRomanNumerals.ValueOf(repeated[:4]...)
+		t.Log("Testing", candidate)
+		return err4 == ErrInvalidRomanNumeral
+	}
+
+	if err := quick.Check(assertion, &quick.Config{MaxCount: 10000}); err != nil {
+		t.Errorf("Can have digit repeated more than 3 times")
+	}
 
 }
